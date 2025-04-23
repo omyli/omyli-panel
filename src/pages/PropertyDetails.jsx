@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Typography,
   Divider,
   Button,
   InputNumber,
@@ -20,8 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { getPropertyById } from "../api/propertiesApi";
 import { useParams } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
-import { InboxOutlined, CarOutlined } from "@ant-design/icons";
-import { createFromIconfontCN } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import "../css/propertyDetails.css";
 
 const PropertyDetails = () => {
@@ -29,15 +27,10 @@ const PropertyDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { propertyId } = useParams();
-  const { Title } = Typography;
   const { TextArea } = Input;
   const { Dragger } = Upload;
 
   const navigator = useNavigate();
-
-  const IconFont = createFromIconfontCN({
-    scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-  });
 
   useEffect(() => {
     if (propertyId) {
@@ -56,11 +49,15 @@ const PropertyDetails = () => {
   };
 
   const _onFinishGeneralDataFormHandler = (values) => {
-    console.log("onSubmit:", values);
+    console.log("General Form:", values);
   };
 
-  const _onFinishGeneralDataFormFailedHandler = (errorInfo) => {
+  const _onFinishFormFailedHandler = (errorInfo) => {
     console.log("Failed:", errorInfo);
+  };
+
+  const _onFinishUbicationFormHandler = (values) => {
+    console.log("Ubication Form:", values);
   };
 
   const props = {
@@ -99,7 +96,7 @@ const PropertyDetails = () => {
             style={{ maxWidth: 600 }}
             autoComplete="off"
             onFinish={_onFinishGeneralDataFormHandler}
-            onFinishFailed={_onFinishGeneralDataFormFailedHandler}
+            onFinishFailed={_onFinishFormFailedHandler}
           >
             {/* <Title level={3}>Datos Generales</Title> */}
             {/* ID */}
@@ -122,7 +119,7 @@ const PropertyDetails = () => {
             {/* BEDROOM */}
             <Form.Item label="Habitaciones" name="bedroom">
               <InputNumber
-                addonBefore={<i class="fas fa-bed"></i>}
+                addonBefore={<i className="fas fa-bed"></i>}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -134,7 +131,7 @@ const PropertyDetails = () => {
                   <Form.Item label={"Estacionamiento"} name="parking">
                     <InputNumber
                       style={{ width: "100%" }}
-                      addonBefore={<i class="fas fa-car"></i>}
+                      addonBefore={<i className="fas fa-car"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -160,7 +157,7 @@ const PropertyDetails = () => {
                     <InputNumber
                       style={{ width: "100%" }}
                       addonAfter="m²"
-                      addonBefore={<i class="fas fa-ruler-combined"></i>}
+                      addonBefore={<i className="fas fa-ruler-combined"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -172,7 +169,7 @@ const PropertyDetails = () => {
                     <InputNumber
                       style={{ width: "100%" }}
                       addonAfter="m²"
-                      addonBefore={<i class="fas fa-vector-square"></i>}
+                      addonBefore={<i className="fas fa-vector-square"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -240,6 +237,8 @@ const PropertyDetails = () => {
             layout={"vertical"}
             style={{ maxWidth: 600 }}
             initialValues={{ ...property }}
+            onFinish={_onFinishUbicationFormHandler}
+            onFinishFailed={_onFinishFormFailedHandler}
           >
             <Form.Item>
               <Row gutter={8}>
@@ -248,7 +247,7 @@ const PropertyDetails = () => {
                   <Form.Item label="Calle" name="address">
                     <Input
                       value={property.address}
-                      addonBefore={<i class="fas fa-map-marker-alt"></i>}
+                      addonBefore={<i className="fas fa-map-marker-alt"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -257,7 +256,7 @@ const PropertyDetails = () => {
                   <Form.Item label={"Colonia"} name="neighborhood">
                     <Input
                       value={property.neighborhood}
-                      addonBefore={<i class="fas fa-home"></i>}
+                      addonBefore={<i className="fas fa-home"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -270,7 +269,7 @@ const PropertyDetails = () => {
                   <Form.Item label={"Ciudad"} name="city">
                     <Input
                       value={property.city}
-                      addonBefore={<i class="fas fa-city"></i>}
+                      addonBefore={<i className="fas fa-city"></i>}
                     />
                   </Form.Item>
                 </Col>
@@ -279,7 +278,7 @@ const PropertyDetails = () => {
                   <Form.Item label={"Estado"} name="state">
                     <Input
                       value={property.state}
-                      addonBefore={<i class="fas fa-flag"></i>}
+                      addonBefore={<i className="fas fa-flag"></i>}
                     />
                   </Form.Item>
                 </Col>

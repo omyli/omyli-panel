@@ -104,7 +104,10 @@ const Properties = () => {
         <div className="properties__data">
           <Table
             columns={columns}
-            dataSource={properties}
+            dataSource={properties.map((property) => ({
+              key: property.id,
+              ...property,
+            }))}
             loading={isLoading}
             tableLayout="fixed"
             pagination={{ pageSize: 10 }}
