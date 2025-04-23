@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Roboto:wght@100;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+
+html,
+body,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  /* font-family: roboto;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  color: #1e212b; */
+}
+
+html,
+body {
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
+  width: 100%;
+  height: 100vh;
+}
+
+table,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-family: roboto;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  margin-left: 25px;
+  margin-right: 25px;
+  max-width: 1600px; /* valor base para ultra-wide */
+}
+
+/* ≥ 1920px */
+@media (max-width: 1919px) {
+  .container {
+    max-width: 1440px;
+  }
+}
+
+/* ≤ 1535px */
+@media (max-width: 1535px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* ≤ 1279px */
+@media (max-width: 1279px) {
+  .container {
+    max-width: calc(1024px - 54px);
+  }
+}
+
+/* ≤ 1023px */
+@media (max-width: 1023px) {
+  .container {
+    /* max-width: 768px; */
+    max-width: calc(768px - 54px);
+  }
+}
+
+/* ≤ 767px */
+@media (max-width: 767px) {
+  .container {
+    /* max-width: 640px; */
+    max-width: calc(640px - 54px);
+  }
+}
+
+/* ≤ 639px */
+@media (max-width: 639px) {
+  .container {
+    /* max-width: 100%; */
+    max-width: calc(100% - 15px);
+  }
+}

@@ -1,0 +1,32 @@
+.demo-logo-vertical {
+  height: 64px;
+  padding: 15px;
+  background-color: antiquewhite;
+}
+
+.layout-container {
+  height: 100vh;
+}
+
+/* App.css */
+.content-scrollable {
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-table-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-spin-nested-loading,
+.ant-table,
+.ant-table-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
