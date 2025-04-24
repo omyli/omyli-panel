@@ -14,9 +14,10 @@ import {
   Image,
   Space,
   Skeleton,
+  Popconfirm,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import { getPropertyById } from "../api/propertiesApi";
+import { getPropertyById, updateProperty } from "../api/propertiesApi";
 import { useParams } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
 import { InboxOutlined } from "@ant-design/icons";
@@ -25,10 +26,17 @@ import "../css/propertyDetails.css";
 const PropertyDetails = () => {
   const [property, setProperty] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isOpenConfirmGeneralData, setIsOpenConfirmGeneralData] =
+    useState(false);
+  const [isOpenConfirmUbicationData, setIsOpenConfirmUbicationData] =
+    useState(false);
 
   const { propertyId } = useParams();
   const { TextArea } = Input;
   const { Dragger } = Upload;
+  const [generalDataForm] = Form.useForm();
+  const [ubicationDataForm] = Form.useForm();
 
   const navigator = useNavigate();
 
@@ -48,16 +56,38 @@ const PropertyDetails = () => {
     setIsLoading(false);
   };
 
-  const _onFinishGeneralDataFormHandler = (values) => {
+  const _onFinishGeneralDataFormHandler = () => {
+    const values = generalDataForm.getFieldsValue(true);
     console.log("General Form:", values);
+    _updateProerpty(values);
+    setIsOpenConfirmGeneralData(false);
   };
 
   const _onFinishFormFailedHandler = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const _onFinishUbicationFormHandler = (values) => {
-    console.log("Ubication Form:", values);
+  const _onFinishUbicationFormHandler = () => {
+    const values = ubicationDataForm.getFieldsValue(true);
+    _updateProerpty(values);
+    setIsOpenConfirmUbicationData(false);
+  };
+
+  const _updateProerpty = async (propertyUpdate) => {
+    setIsUpdateLoading(true);
+
+    try {
+      const response = await updateProperty({
+        id: property.id,
+        ...propertyUpdate,
+      });
+      if (response.status === 200) {
+        setProperty(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setIsUpdateLoading(false);
   };
 
   const props = {
@@ -91,6 +121,7 @@ const PropertyDetails = () => {
       children: (
         <Skeleton loading={isLoading} active>
           <Form
+            form={generalDataForm}
             layout={"vertical"}
             initialValues={{ ...property }}
             style={{ maxWidth: 600 }}
@@ -98,7 +129,6 @@ const PropertyDetails = () => {
             onFinish={_onFinishGeneralDataFormHandler}
             onFinishFailed={_onFinishFormFailedHandler}
           >
-            {/* <Title level={3}>Datos Generales</Title> */}
             {/* ID */}
             <Form.Item label="ID" name="id">
               <Input disabled style={{ width: 220 }} />
@@ -107,6 +137,7 @@ const PropertyDetails = () => {
             {/* PRICE */}
             <Form.Item label="Precio" name="price">
               <InputNumber
+                disabled={isUpdateLoading}
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -119,6 +150,7 @@ const PropertyDetails = () => {
             {/* BEDROOM */}
             <Form.Item label="Habitaciones" name="bedroom">
               <InputNumber
+                disabled={isUpdateLoading}
                 addonBefore={<i className="fas fa-bed"></i>}
                 style={{ width: "100%" }}
               />
@@ -130,6 +162,7 @@ const PropertyDetails = () => {
                 <Col span={12}>
                   <Form.Item label={"Estacionamiento"} name="parking">
                     <InputNumber
+                      disabled={isUpdateLoading}
                       style={{ width: "100%" }}
                       addonBefore={<i className="fas fa-car"></i>}
                     />
@@ -138,6 +171,7 @@ const PropertyDetails = () => {
                 <Col span={12}>
                   <Form.Item label={"Baños"} name="toilet">
                     <InputNumber
+                      disabled={isUpdateLoading}
                       style={{ width: "100%" }}
                       addonBefore={<i className="fa-solid fa-toilet"></i>}
                     />
@@ -155,6 +189,7 @@ const PropertyDetails = () => {
                     name="builtSquareMeters"
                   >
                     <InputNumber
+                      disabled={isUpdateLoading}
                       style={{ width: "100%" }}
                       addonAfter="m²"
                       addonBefore={<i className="fas fa-ruler-combined"></i>}
@@ -167,6 +202,7 @@ const PropertyDetails = () => {
                     name="landSquareMeters"
                   >
                     <InputNumber
+                      disabled={isUpdateLoading}
                       style={{ width: "100%" }}
                       addonAfter="m²"
                       addonBefore={<i className="fas fa-vector-square"></i>}
@@ -182,6 +218,7 @@ const PropertyDetails = () => {
                 <Col span={12}>
                   <Form.Item label={"Tipo"} name="type">
                     <Select
+                      disabled={isUpdateLoading}
                       options={[
                         { value: "HOUSE", label: "Casa" },
                         { value: "APARTMENT", label: "Departamento" },
@@ -194,10 +231,11 @@ const PropertyDetails = () => {
                 <Col span={12}>
                   <Form.Item label={"Estatus"} name="status">
                     <Select
+                      disabled={isUpdateLoading}
                       options={[
                         { value: "SALE", label: "Venta" },
                         { value: "RENT", label: "Renta" },
-                        { value: "INVESTMENT", label: "inversión" },
+                        { value: "INVESTMENT", label: "Inversión" },
                       ]}
                     />
                   </Form.Item>
@@ -207,18 +245,37 @@ const PropertyDetails = () => {
 
             {/* DESCRIPTION */}
             <Form.Item label={"Descripción"} name="description">
-              <TextArea placeholder="maxLength is 6" rows={5} />
+              <TextArea
+                disabled={isUpdateLoading}
+                placeholder="maxLength is 6"
+                rows={9}
+              />
             </Form.Item>
 
             {/* ACTIONS */}
             <Form.Item>
               <Space>
-                <Button type="primary" htmlType="submit">
-                  Guardar
-                </Button>
-                <Button htmlType="button" onClick={() => {}}>
-                  Restaurar valores actuales
-                </Button>
+                <Popconfirm
+                  title="Actualizar propiedad"
+                  description="Quieres actualizar los datos generales?"
+                  open={isOpenConfirmGeneralData}
+                  onConfirm={_onFinishGeneralDataFormHandler}
+                  okButtonProps={{ loading: isUpdateLoading }}
+                  onCancel={() => {
+                    setIsOpenConfirmGeneralData(false);
+                  }}
+                >
+                  <Button
+                    disabled={isUpdateLoading}
+                    type="primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsOpenConfirmGeneralData(true);
+                    }}
+                  >
+                    Guardar
+                  </Button>
+                </Popconfirm>
               </Space>
             </Form.Item>
             <Divider />
@@ -235,6 +292,7 @@ const PropertyDetails = () => {
         <Skeleton loading={isLoading} active>
           <Form
             layout={"vertical"}
+            form={ubicationDataForm}
             style={{ maxWidth: 600 }}
             initialValues={{ ...property }}
             onFinish={_onFinishUbicationFormHandler}
@@ -246,6 +304,7 @@ const PropertyDetails = () => {
                   {/* ADDRESS */}
                   <Form.Item label="Calle" name="address">
                     <Input
+                      disabled={isUpdateLoading}
                       value={property.address}
                       addonBefore={<i className="fas fa-map-marker-alt"></i>}
                     />
@@ -255,6 +314,7 @@ const PropertyDetails = () => {
                   {/* NEIGHBORHOOD */}
                   <Form.Item label={"Colonia"} name="neighborhood">
                     <Input
+                      disabled={isUpdateLoading}
                       value={property.neighborhood}
                       addonBefore={<i className="fas fa-home"></i>}
                     />
@@ -268,6 +328,7 @@ const PropertyDetails = () => {
                   {/* CITY */}
                   <Form.Item label={"Ciudad"} name="city">
                     <Input
+                      disabled={isUpdateLoading}
                       value={property.city}
                       addonBefore={<i className="fas fa-city"></i>}
                     />
@@ -277,6 +338,7 @@ const PropertyDetails = () => {
                   {/* STATE */}
                   <Form.Item label={"Estado"} name="state">
                     <Input
+                      disabled={isUpdateLoading}
                       value={property.state}
                       addonBefore={<i className="fas fa-flag"></i>}
                     />
@@ -288,12 +350,27 @@ const PropertyDetails = () => {
             {/* ACTIONS */}
             <Form.Item>
               <Space>
-                <Button type="primary" htmlType="submit">
-                  Guardar
-                </Button>
-                <Button htmlType="button" onClick={() => {}}>
-                  Restaurar valores actuales
-                </Button>
+                <Popconfirm
+                  title="Actualizar propiedad"
+                  description="Quieres actualizar la ubicación de la propiedad?"
+                  open={isOpenConfirmUbicationData}
+                  onConfirm={_onFinishUbicationFormHandler}
+                  okButtonProps={{ loading: isUpdateLoading }}
+                  onCancel={() => {
+                    setIsOpenConfirmUbicationData(false);
+                  }}
+                >
+                  <Button
+                    disabled={isUpdateLoading}
+                    type="primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsOpenConfirmUbicationData(true);
+                    }}
+                  >
+                    Guardar
+                  </Button>
+                </Popconfirm>
               </Space>
             </Form.Item>
             <Divider />
