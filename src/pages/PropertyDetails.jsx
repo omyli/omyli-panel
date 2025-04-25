@@ -29,14 +29,14 @@ const PropertyDetails = () => {
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isOpenConfirmGeneralData, setIsOpenConfirmGeneralData] =
     useState(false);
-  const [isOpenConfirmUbicationData, setIsOpenConfirmUbicationData] =
+  const [isOpenConfirmLocationData, setIsOpenConfirmLocationData] =
     useState(false);
 
   const { propertyId } = useParams();
   const { TextArea } = Input;
   const { Dragger } = Upload;
   const [generalDataForm] = Form.useForm();
-  const [ubicationDataForm] = Form.useForm();
+  const [locationDataForm] = Form.useForm();
 
   const navigator = useNavigate();
 
@@ -44,7 +44,7 @@ const PropertyDetails = () => {
     if (propertyId) {
       getPropertyByIdAsync(propertyId);
     }
-  }, []);
+  }, [propertyId]);
 
   const getPropertyByIdAsync = async (id) => {
     setIsLoading(true);
@@ -59,7 +59,7 @@ const PropertyDetails = () => {
   const _onFinishGeneralDataFormHandler = () => {
     const values = generalDataForm.getFieldsValue(true);
     console.log("General Form:", values);
-    _updateProerpty(values);
+    _updateProperty(values);
     setIsOpenConfirmGeneralData(false);
   };
 
@@ -67,13 +67,13 @@ const PropertyDetails = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const _onFinishUbicationFormHandler = () => {
-    const values = ubicationDataForm.getFieldsValue(true);
-    _updateProerpty(values);
-    setIsOpenConfirmUbicationData(false);
+  const _onFinishLocationFormHandler = () => {
+    const values = locationDataForm.getFieldsValue(true);
+    _updateProperty(values);
+    setIsOpenConfirmLocationData(false);
   };
 
-  const _updateProerpty = async (propertyUpdate) => {
+  const _updateProperty = async (propertyUpdate) => {
     setIsUpdateLoading(true);
 
     try {
@@ -180,7 +180,7 @@ const PropertyDetails = () => {
               </Row>
             </Form.Item>
 
-            {/* METTERS */}
+            {/* METERS */}
             <Form.Item>
               <Row gutter={8}>
                 <Col span={12}>
@@ -292,10 +292,10 @@ const PropertyDetails = () => {
         <Skeleton loading={isLoading} active>
           <Form
             layout={"vertical"}
-            form={ubicationDataForm}
+            form={locationDataForm}
             style={{ maxWidth: 600 }}
             initialValues={{ ...property }}
-            onFinish={_onFinishUbicationFormHandler}
+            onFinish={_onFinishLocationFormHandler}
             onFinishFailed={_onFinishFormFailedHandler}
           >
             <Form.Item>
@@ -353,11 +353,11 @@ const PropertyDetails = () => {
                 <Popconfirm
                   title="Actualizar propiedad"
                   description="Quieres actualizar la ubicación de la propiedad?"
-                  open={isOpenConfirmUbicationData}
-                  onConfirm={_onFinishUbicationFormHandler}
+                  open={isOpenConfirmLocationData}
+                  onConfirm={_onFinishLocationFormHandler}
                   okButtonProps={{ loading: isUpdateLoading }}
                   onCancel={() => {
-                    setIsOpenConfirmUbicationData(false);
+                    setIsOpenConfirmLocationData(false);
                   }}
                 >
                   <Button
@@ -365,7 +365,7 @@ const PropertyDetails = () => {
                     type="primary"
                     onClick={(e) => {
                       e.preventDefault();
-                      setIsOpenConfirmUbicationData(true);
+                      setIsOpenConfirmLocationData(true);
                     }}
                   >
                     Guardar
