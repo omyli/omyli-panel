@@ -9,18 +9,17 @@ import {
   Row,
   Col,
   Collapse,
-  message,
-  Upload,
-  Image,
   Space,
   Skeleton,
   Popconfirm,
+  notification,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { getPropertyById, updateProperty } from "../api/propertiesApi";
 import { useParams } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
-import { InboxOutlined } from "@ant-design/icons";
+import ImageUploader from "../components/ImageUploader";
+import { SaveOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import "../css/propertyDetails.css";
 
 const PropertyDetails = () => {
@@ -31,12 +30,14 @@ const PropertyDetails = () => {
     useState(false);
   const [isOpenConfirmLocationData, setIsOpenConfirmLocationData] =
     useState(false);
+  const [images, setImages] = useState([]);
+  const [mainImage, setMainImage] = useState(null);
 
   const { propertyId } = useParams();
   const { TextArea } = Input;
-  const { Dragger } = Upload;
   const [generalDataForm] = Form.useForm();
   const [locationDataForm] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
 
   const navigator = useNavigate();
 
@@ -52,6 +53,8 @@ const PropertyDetails = () => {
     if (response.status === 200) {
       const propertyFromAPI = response.data;
       setProperty(propertyFromAPI);
+      setImages(propertyFromAPI.images || []);
+      setMainImage(propertyFromAPI.mainImage || propertyFromAPI.images?.[0]);
     }
     setIsLoading(false);
   };
@@ -59,7 +62,7 @@ const PropertyDetails = () => {
   const _onFinishGeneralDataFormHandler = () => {
     const values = generalDataForm.getFieldsValue(true);
     console.log("General Form:", values);
-    _updateProperty(values);
+    _updateProperty(values, "Datos generales actualizados exitosamente");
     setIsOpenConfirmGeneralData(false);
   };
 
@@ -69,11 +72,11 @@ const PropertyDetails = () => {
 
   const _onFinishLocationFormHandler = () => {
     const values = locationDataForm.getFieldsValue(true);
-    _updateProperty(values);
+    _updateProperty(values, "Datos de ubicación actualizados exitosamente");
     setIsOpenConfirmLocationData(false);
   };
 
-  const _updateProperty = async (propertyUpdate) => {
+  const _updateProperty = async (propertyUpdate, successMessage) => {
     setIsUpdateLoading(true);
 
     try {
@@ -83,31 +86,46 @@ const PropertyDetails = () => {
       });
       if (response.status === 200) {
         setProperty(response.data);
+        api.success({
+          message: "Éxito",
+          description: successMessage,
+          placement: "topRight",
+        });
       }
     } catch (error) {
+      api.error({
+        message: "Error",
+        description: "Error al actualizar los datos",
+        placement: "topRight",
+      });
       console.log(error);
     }
     setIsUpdateLoading(false);
   };
 
-  const props = {
-    name: "file",
-    multiple: true,
-    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+  const handleImagesChange = (newImages, newMainImage) => {
+    setImages(newImages);
+    setMainImage(newMainImage);
+  };
+
+  const handleSaveImages = async (newImages, newMainImage) => {
+    try {
+      const fileterdImages = newImages.filter((image) => image !== mainImage);
+      console.log(fileterdImages);
+      const response = await updateProperty({
+        id: property.id,
+        images: fileterdImages,
+        mainImage: newMainImage,
+      });
+      if (response.status === 200) {
+        setProperty(response.data);
+        setImages(response.data.images || []);
+        setMainImage(response.data.mainImage || response.data.images?.[0]);
       }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
+    } catch (error) {
+      console.error("Error saving images:", error);
+      throw error;
+    }
   };
 
   const items = [
@@ -256,8 +274,18 @@ const PropertyDetails = () => {
             <Form.Item>
               <Space>
                 <Popconfirm
-                  title="Actualizar propiedad"
-                  description="Quieres actualizar los datos generales?"
+                  title="Confirmar guardado"
+                  description={
+                    <div>
+                      <p>¿Estás seguro de que deseas guardar los cambios?</p>
+                      <p style={{ color: "red" }}>
+                        <ExclamationCircleOutlined /> Esta acción no se puede
+                        deshacer
+                      </p>
+                    </div>
+                  }
+                  okText="Sí, guardar"
+                  cancelText="Cancelar"
                   open={isOpenConfirmGeneralData}
                   onConfirm={_onFinishGeneralDataFormHandler}
                   okButtonProps={{ loading: isUpdateLoading }}
@@ -268,6 +296,7 @@ const PropertyDetails = () => {
                   <Button
                     disabled={isUpdateLoading}
                     type="primary"
+                    icon={<SaveOutlined />}
                     onClick={(e) => {
                       e.preventDefault();
                       setIsOpenConfirmGeneralData(true);
@@ -351,8 +380,18 @@ const PropertyDetails = () => {
             <Form.Item>
               <Space>
                 <Popconfirm
-                  title="Actualizar propiedad"
-                  description="Quieres actualizar la ubicación de la propiedad?"
+                  title="Confirmar guardado"
+                  description={
+                    <div>
+                      <p>¿Estás seguro de que deseas guardar los cambios?</p>
+                      <p style={{ color: "red" }}>
+                        <ExclamationCircleOutlined /> Esta acción no se puede
+                        deshacer
+                      </p>
+                    </div>
+                  }
+                  okText="Sí, guardar"
+                  cancelText="Cancelar"
                   open={isOpenConfirmLocationData}
                   onConfirm={_onFinishLocationFormHandler}
                   okButtonProps={{ loading: isUpdateLoading }}
@@ -363,6 +402,7 @@ const PropertyDetails = () => {
                   <Button
                     disabled={isUpdateLoading}
                     type="primary"
+                    icon={<SaveOutlined />}
                     onClick={(e) => {
                       e.preventDefault();
                       setIsOpenConfirmLocationData(true);
@@ -384,39 +424,14 @@ const PropertyDetails = () => {
         <strong style={{ color: "rgba(0, 0, 0, 0.88)" }}>Multimedia</strong>
       ),
       children: (
-        <div style={{ maxWidth: 600 }}>
+        <div style={{ maxWidth: 800 }}>
           <Skeleton loading={isLoading} active>
-            <Dragger style={{ maxWidth: 600 }} {...props}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">
-                Click or drag file to this area to upload
-              </p>
-              <p className="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibited from
-                uploading company data or other banned files.
-              </p>
-            </Dragger>
-
-            <Divider />
-            <p>Imagen principal</p>
-            <Image
-              width={200}
-              height={200}
-              style={{ marginButto: 25, marginRight: 25 }}
-              src={property.mainImage}
+            <ImageUploader
+              initialImages={[mainImage, ...images]}
+              initialMainImage={mainImage}
+              onImagesChange={handleImagesChange}
+              onSave={handleSaveImages}
             />
-            {property?.images?.map((image, key) => (
-              <Image
-                key={key}
-                width={200}
-                height={200}
-                style={{ marginButto: 25, marginRight: 25 }}
-                src={image}
-              />
-            ))}
-            <Divider />
           </Skeleton>
         </div>
       ),
@@ -425,6 +440,7 @@ const PropertyDetails = () => {
 
   return (
     <MainLayout>
+      {contextHolder}
       <Space direction="vertical">
         <Button
           onClick={() => {
