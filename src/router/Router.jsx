@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Properties from "../pages/Properties";
 import Profile from "../pages/Profile";
 import PropertyDetails from "../pages/PropertyDetails";
+import NewProperty from "../pages/NewProperty";
 
 const Router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const Router = createBrowserRouter([
   {
     path: "/propiedades/:propertyId",
     element: <PropertyDetails />,
+  },
+  {
+    path: "/propiedades/nueva",
+    element: <NewProperty />,
   },
 ]);
 

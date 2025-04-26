@@ -1,8 +1,8 @@
 // EXTERNAL
 import axios from "axios";
 
-const apiBaseUrl = "https://p01--omyli-api--qpfx26t9ms8m.code.run";
-//const apiBaseUrl = "http://localhost:8080";
+//const apiBaseUrl = "https://p01--omyli-api--qpfx26t9ms8m.code.run";
+const apiBaseUrl = "http://localhost:8080";
 console.log("URL: " + apiBaseUrl);
 
 export const client = axios.create({
@@ -30,4 +30,13 @@ export const searchProperties = (searchParams, page, perPage) => {
 
 export const updateProperty = (propertyWithUpdate) => {
   return client.put(`/realestate/v1/realestate`, propertyWithUpdate);
+};
+
+export const createProperty = (newProperty) => {
+  return client.post(`/realestate/v1/realestate`, newProperty);
+};
+
+export const deleteProperty = (propertyId) => {
+  console.log("deleted propertyId: " + propertyId);
+  return null; //client.post(`/realestate/v1/realestate`, newProperty);
 };

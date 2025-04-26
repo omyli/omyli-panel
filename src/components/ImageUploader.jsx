@@ -24,6 +24,7 @@ const ImageUploader = ({
   initialImages = [],
   initialMainImage,
   onSave,
+  disabledButton = false,
 }) => {
   const [previewImages, setPreviewImages] = useState(initialImages);
   const [mainImage, setMainImage] = useState(
@@ -177,7 +178,7 @@ const ImageUploader = ({
           </Space>
         </div>
 
-        {previewImages.length > 0 && (
+        {previewImages.length > 0 && !disabledButton && (
           <div className="save-button-container">
             <Popconfirm
               title="Confirmar guardado"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Input, Image, Table, Tag, Button } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import { Input, Image, Table, Tag, Button, Space, Flex } from "antd";
+import { EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { searchProperties } from "../api/propertiesApi";
 import MainLayout from "../components/MainLayout";
@@ -92,14 +92,24 @@ const Properties = () => {
     <MainLayout>
       <div className="properties-container">
         <div className="properties__actions-container">
-          <Search
-            placeholder="Busca por caracteristicas o por ID del inmueble..."
-            size="large"
-            loading={isLoading}
-            value={searchText}
-            onChange={_onSearchBarChangeHandler}
-            onKeyUp={_onKeyUpSearchBarHandler}
-          />
+          <Flex gap="middle" align="center">
+            <Search
+              placeholder="Busca por caracteristicas o por ID del inmueble..."
+              size="large"
+              loading={isLoading}
+              value={searchText}
+              onChange={_onSearchBarChangeHandler}
+              onKeyUp={_onKeyUpSearchBarHandler}
+              style={{ flex: 1 }}
+            />
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<PlusOutlined />}
+              size="large"
+              onClick={() => navigator("/propiedades/nueva")}
+            />
+          </Flex>
         </div>
         <div className="properties__data">
           <Table
