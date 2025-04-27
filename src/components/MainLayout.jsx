@@ -8,12 +8,12 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import UserMenu from "./UserMenu";
+import { useAuthContext } from "../hooks/context/AuthContext";
 const { Header, Sider, Content } = Layout;
 
 import "../css/layout.css";
 
 const MainLayout = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
   const [selectedTab, setSelectedTab] = useState("/");
 
   useEffect(() => {
@@ -25,6 +25,9 @@ const MainLayout = ({ children }) => {
       setSelectedTab("/");
     }
   }, []);
+
+  const { collapsedMenu, setCollapsedMenu } = useAuthContext();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -50,7 +53,7 @@ const MainLayout = ({ children }) => {
 
   return (
     <Layout className="layout-container">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsedMenu}>
         <div
           className="demo-logo-vertical"
           style={{ backgroundColor: "rgb(0 21 41)" }}
@@ -75,8 +78,8 @@ const MainLayout = ({ children }) => {
         >
           <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
+            icon={collapsedMenu ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={setCollapsedMenu}
             style={{
               fontSize: "16px",
               width: 64,

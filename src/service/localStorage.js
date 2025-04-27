@@ -17,3 +17,9 @@ export const getLoginData = () => {
   const id = localStorage.getItem("id");
   return { token, email, role, id };
 };
+export const setCollapsedMenu = (collapsed) => {
+  localStorage.setItem("collapsedMenu", collapsed);
+};
+export const getCollapsedMenu = () => {
+  return localStorage.getItem("collapsedMenu");
+};
