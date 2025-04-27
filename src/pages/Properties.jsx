@@ -22,7 +22,7 @@ const Properties = () => {
 
   const searchPropertiesHandler = async (page, searchText) => {
     setIsLoading(true);
-    const response = await searchProperties({ searchText }, page, 20);
+    const response = await searchProperties({ searchText }, page, 200);
     const properties = response.status === 200 ? response.data.items : [];
     setProperties(properties);
     setTotalPages(response.data.totalPages);

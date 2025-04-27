@@ -24,6 +24,7 @@ const UserMenu = () => {
           <Text>Mi Perfil</Text>
         </Space>
       ),
+      onClick: () => navigate("/perfil"),
     },
     {
       type: "divider",
