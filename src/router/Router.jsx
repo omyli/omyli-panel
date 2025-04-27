@@ -5,23 +5,45 @@ import Properties from "../pages/Properties";
 import Profile from "../pages/Profile";
 import PropertyDetails from "../pages/PropertyDetails";
 import NewProperty from "../pages/NewProperty";
+import Login from "../pages/Login";
+import PrivateRoute from "./PrivateRoute";
 
 const Router = createBrowserRouter([
   {
+    path: "/auth",
+    element: <Login />,
+  },
+  {
     path: "/",
-    element: <Properties />,
+    element: (
+      <PrivateRoute>
+        <Properties />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/perfil",
-    element: <Profile />,
+    element: (
+      <PrivateRoute>
+        <Profile />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/propiedades/:propertyId",
-    element: <PropertyDetails />,
+    element: (
+      <PrivateRoute>
+        <PropertyDetails />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/propiedades/nueva",
-    element: <NewProperty />,
+    element: (
+      <PrivateRoute>
+        <NewProperty />
+      </PrivateRoute>
+    ),
   },
 ]);
 
