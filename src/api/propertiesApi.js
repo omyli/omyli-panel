@@ -2,8 +2,7 @@
 import axios from "axios";
 import { getLoginData, removeLoginData } from "../service/localStorage";
 
-//const apiBaseUrl = "https://p01--omyli-api--qpfx26t9ms8m.code.run";
-const apiBaseUrl = "http://localhost:8080";
+const apiBaseUrl = "https://p01--omyli-api--qpfx26t9ms8m.code.run";
 
 export const client = axios.create({
   baseURL: apiBaseUrl,
