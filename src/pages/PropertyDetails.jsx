@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Space, Skeleton } from "antd";
 import { useNavigate } from "react-router-dom";
-import { getPropertyById, updateProperty } from "../api/propertiesApi";
+import {
+  getPropertyById,
+  updateProperty,
+  deleteProperty,
+} from "../api/propertiesApi";
 import { useParams } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
 import PropertyForm from "../components/PropertyForm";
@@ -42,7 +46,19 @@ const PropertyDetails = () => {
       }
     } catch (error) {
       console.log(error);
-      throw error;
+    }
+    setIsUpdateLoading(false);
+  };
+
+  const handleDelete = async (propertyId) => {
+    setIsUpdateLoading(true);
+    try {
+      const response = await deleteProperty(propertyId);
+      if (response.status === 200) {
+        navigator("/");
+      }
+    } catch (e) {
+      console.log(e);
     }
     setIsUpdateLoading(false);
   };
@@ -61,6 +77,7 @@ const PropertyDetails = () => {
           <PropertyForm
             initialValues={property}
             onSave={handleSave}
+            onDelete={handleDelete}
             isUpdateLoading={isUpdateLoading}
           />
         </Skeleton>

@@ -23,7 +23,6 @@ export const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     const collapsedMenuFromLocalStorage = getCollapsedMenu();
-    console.log("collapsedMenuFromLocalStorage", collapsedMenuFromLocalStorage);
     setCollapsedMenu(collapsedMenuFromLocalStorage);
   }, []);
 

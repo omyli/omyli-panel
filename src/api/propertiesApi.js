@@ -41,6 +41,7 @@ client.interceptors.response.use(
   }
 );
 
+// Sync
 export const listAllProperties = () => {
   return client.get("/realestate/v1/realestate");
 };
@@ -69,10 +70,14 @@ export const createProperty = (newProperty) => {
 };
 
 export const deleteProperty = (propertyId) => {
-  console.log("deleted propertyId: " + propertyId);
-  return null; //client.post(`/realestate/v1/realestate`, newProperty);
+  return client.delete(`/realestate/v1/realestate?propertyId=${propertyId}`);
 };
 
+export const syncProperties = () => {
+  return client.get(`/realestate/v1/realestate/sync`);
+};
+
+//Auth
 export const login = ({ email, password }) => {
   return client.post(`/auth/v1/login`, { email, password });
 };

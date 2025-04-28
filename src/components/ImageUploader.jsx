@@ -84,7 +84,10 @@ const ImageUploader = ({
     if (onSave) {
       setIsLoading(true);
       try {
-        await onSave(previewImages, mainImage);
+        const finalImages = previewImages.filter(
+          (image) => image !== mainImage
+        );
+        await onSave(finalImages, mainImage);
         api.success({
           message: "Éxito",
           description: "Imágenes guardadas exitosamente",
@@ -110,6 +113,10 @@ const ImageUploader = ({
     // Si eliminamos la imagen principal, establecemos la primera imagen restante como principal
     if (previewImages[index] === mainImage && newImages.length > 0) {
       setMainImage(newImages[0]);
+    }
+
+    if (newImages.length === 0) {
+      setMainImage(null);
     }
 
     if (onImagesChange) {

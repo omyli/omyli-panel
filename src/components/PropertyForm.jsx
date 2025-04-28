@@ -26,6 +26,7 @@ const { TextArea } = Input;
 const PropertyForm = ({
   initialValues = {},
   onSave,
+  onDelete,
   isUpdateLoading = false,
   isNewProperty = false,
 }) => {
@@ -536,8 +537,7 @@ const PropertyForm = ({
             cancelText="Cancelar"
             okButtonProps={{ danger: true }}
             onConfirm={() => {
-              // TODO: Implementar la función de eliminación
-              console.log("Eliminar propiedad:", initialValues.id);
+              onDelete(initialValues.id);
             }}
           >
             <Button danger type="primary" icon={<DeleteOutlined />}>
